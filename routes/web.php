@@ -24,6 +24,7 @@ Route::get('/getSubcat', function () {
     return response()->json($subcat);
 });
 
+
 Route::get('/getThana', function () {
     $getThanaid = $_GET['getThana'];
     $subcat = Thana::select('id','name')->where('district_id',$getThanaid)->get();
