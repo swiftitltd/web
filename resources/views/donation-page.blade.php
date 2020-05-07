@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -26,7 +26,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -54,11 +54,11 @@
                 <span>Donation History</span>
             </a>
         </li>
-        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- Sidebar Toggler (Sidebar) -
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+->
     </ul>
     <!-- End of Sidebar -->
 
@@ -131,7 +131,7 @@
                             <div class="card-body">
                                 <form action="{{ route('donation-submit') }}" method="post">
                                     @csrf
-                                    <input name="user_id" value="{{ $user_id }}">
+                                    <input name="user_id" value="">
                                     <div class="form-group row">
                                         <label for="staticEmail" class="col-sm-2 col-form-label">Beneficiary:</label>
                                         <div class="col-sm-10">
@@ -180,7 +180,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; E-Donation 2019</span>
+                    <span>Copyright &copy; E-Donation 2020</span>
                 </div>
             </div>
         </footer>
@@ -210,7 +210,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <a class="btn btn-primary" href="/donation-platform">Logout</a>
             </div>
         </div>
     </div>

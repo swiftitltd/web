@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -30,7 +30,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
@@ -44,11 +44,11 @@
         <!-- Nav Item - Dashboard -->
 
 
-        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- Sidebar Toggler (Sidebar) 
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+-->
     </ul>
     <!-- End of Sidebar -->
 
@@ -77,7 +77,7 @@
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-lg-inline text-gray-600 small">User Name</span>
+                            <span class="mr-2 d-lg-inline text-gray-600 small">My Account</span>
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -107,12 +107,12 @@
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div class="container">
                 
                 <form action="{{ route('getCharityList') }}" method="post">
                     @csrf
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Donate Now!</h1><hr>
+                <h1 class="h3 mb-4 text-gray-800 text-center">Donate Now!</h1><hr>
                 <div class="row">
                     
                     <div class="col-lg-12">
@@ -127,7 +127,7 @@
                                 </select>
                                 
                                 <select id="thana" required class="form-control" name="thana_id" style="margin-bottom:10px">
-                                    <option value="0">Select Thana/Upojela</option>
+                                    <option value="0">Select Thana/Upazila</option>
                                 
                                 </select>
                             </div>
@@ -137,7 +137,7 @@
                     
                     <div class="col-lg-12">
                             <div class="form-group">
-                                <label class="h3">What do you want to donante?</label>
+                                <label class="h3">What do you want to donate?</label>
                                 <select id="getSubcat" name="category" class="form-control" required>
                                     <option value='0'>Select Category</option>
                                     <?php foreach($category as $categories){ 
@@ -146,11 +146,11 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select id="Subcat" name="subcategory" class="form-control" required>
-                                    
+                                <select id="Subcat" name="subcategory" class="form-control">
+                                    <option value='0'>Select Sub Category</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-lg btn-primary">Get Beneficiary List</button>
+                            <button type="submit" class="btn btn-lg btn-primary">Get Receiving Organization List</button>
                        
                     </div>
                 </div>
@@ -166,7 +166,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; E-Donation 2019</span>
+                    <span>Copyright &copy; E-Donation 2020</span>
                 </div>
             </div>
         </footer>
@@ -196,7 +196,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="{{ asset('/') }}">Logout</a>
+                <a class="btn btn-primary" href="/donation-platform">Logout</a>
             </div>
         </div>
     </div>
@@ -225,6 +225,8 @@
            success:function(res){               
             if(res){
                 $("#Subcat").empty();
+                
+                $("#Subcat").append('<option value="0">Select Subcategory </option>');
                 $.each(res,function(key,value){
                     $("#Subcat").append('<option value="'+value.id+'">'+value.name+'</option>');
                 });
@@ -247,6 +249,7 @@
            success:function(res){               
             if(res){
                 $("#thana").empty();
+                $("#thana").append('<option value="0">Select Thana/Upazila</option>');
                 $.each(res,function(key,value){
                     $("#thana").append('<option value="'+value.id+'">'+value.name+'</option>');
                 });

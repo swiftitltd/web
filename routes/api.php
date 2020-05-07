@@ -44,7 +44,7 @@ Route::get('users', function() {
 
 Route::get('category', function() {
 
-    $Category = Category::all();
+    $Category = Category::orderBy('id','asc')->get();
     if(count($Category) == 0){
        $feedback = [
            'status'     => "error",
