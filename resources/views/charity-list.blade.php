@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -32,10 +32,10 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="http://echaritybd.com/donor/home">
             <div class="sidebar-brand-icon rotate-n-15">
                 <img src="http://echaritybd.com/E-Donation_transparent.png" height="50px">
             </div>
@@ -45,11 +45,11 @@
         <hr class="sidebar-divider my-0">
 
 
-        <!-- Sidebar Toggler (Sidebar) -->
+        <!-- Sidebar Toggler (Sidebar) 
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+-->
     </ul>
     <!-- End of Sidebar -->
 
@@ -78,7 +78,7 @@
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-lg-inline text-gray-600 small">User Name</span>
+                            <span class="mr-2 d-lg-inline text-gray-600 small">My Account</span>
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -107,13 +107,13 @@
             </nav>
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Beneficiary Request</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Receiving Organization List</h6>
+                        <a href="{{ route('donar.home') }}" class="btn btn-success" style="float:right">Back</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -121,24 +121,40 @@
                                 <thead>
                                     <th>Name</th>
                                     <th>Address</th>
-                                    <th>Item Category</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
                                     <th>District</th>
+                                    <th>Thana/Upazila</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th>Quantity</th>
+                                    <th>Value</th>
+                                    <th>Description</th>
+                                    <th>Mobile No.</th>
+                                    <th>bKash A/C</th>
+                                    <th>Bank Details</th>
                                     <th>Donate Now</th>
                                 </thead>
                                 
                                 <tbody>
-                                @foreach ($charity as $c)
+                                @foreach ($charity ?? '' as $c)
                                 <?php //dd($c); ?>
                                     <tr>
-                                        <td><?php $name = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $name->name; ?></td>
-                                        <td><?php $add = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $add->address; ?></td>
-                                        <td><?php $subcategories = DB::table('subcategories')->where('id',$c['subcat_id'])->first(); echo $subcategories->name;?></td>
+                                    <?php $subcategories = DB::table('subcategories')->where('id',$c['subcat_id'])->first(); ?>
+
+                                        <td><?php $name = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $name->orgName; ?></td>
+                                        <td><?php $add = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $add->orgAddress; ?></td>
+                                        <td><?php $districts = DB::table('districts')->where('id',$c['district_id'])->first(); echo $districts->name;?></td>
+                                        <td><?php $thanas = DB::table('thanas')->where('id',$c['thana_id'])->first(); echo $thanas->name;?></td>
+                                        <td><?php $categories = DB::table('categories')->where('id',$subcategories->category_id)->first(); echo $categories->name;?></td>
+                                        <td><?php echo $subcategories->name;?></td>
                                         <td>{{ $c['qty'] }}</td>
                                         <td>{{ $c['price'] }}</td>
-                                        <td><?php $districts = DB::table('districts')->where('id',$c['district_id'])->first(); echo $districts->name;?></td>
-                                        <td><a href="{{ url('viewRecipt') }}" class="btn btn-success">Donate Now</a></td>
+                                        
+                                        <td>{{ $c['note'] }}</td>
+                                        <td><?php $add = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $add->orgMobile; ?></td>
+                                        <td><?php $add = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $add->bkash; ?></td>
+                                        <td><?php $add = DB::table('users')->where('user_id',$c['user_id'])->first(); echo $add->bankDetails; ?></td>
+                                        <?php $approveDonation = "viewRecipt/".$c['id']; ?>
+                                        <td><a href="{{ url($approveDonation) }}" class="btn btn-success">Donate Now</a></td>
 
                                     </tr>
                                 @endforeach
@@ -158,7 +174,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2019</span>
+                    <span>Copyright &copy; E Donation 2020</span>
                 </div>
             </div>
         </footer>
@@ -188,7 +204,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <a class="btn btn-primary" href="/donation-platform">Logout</a>
             </div>
         </div>
     </div>

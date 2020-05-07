@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -20,8 +20,14 @@
 
 </head>
 <body class="bg-gradient-primary">
-
-<div class="container-fluid">
+<style>
+    .bg-gradient-primary {
+    background-color: #dee1e6;
+    background-image: linear-gradient(180deg,#dee1e6 10%,#d1d1d2 100%);
+    background-size: cover;
+}
+</style>
+<div class="container">
 
     <!-- Outer Row -->
     <div class="row justify-content-center">
@@ -36,7 +42,7 @@
                             <h1 class="h2 text-gray-900 mb-4">Welcome to E-Donation</h1>
                             <div class="row mt-5">
                                 <div class="col-lg-6 mb-5">
-                                    <h4>Do you want to donate?</h4>
+                                    <h6>Do you want to donate?</h6>
                                     <a href="{{ url('/donor-register') }}" class="btn btn-success btn-icon-split">
                           <span class="icon text-white-50">
                             <i class="far fa-user"></i>
@@ -45,12 +51,12 @@
                                     </a>
                                 </div>
                                 <div class="col-lg-6">
-                                    <h4>Do you have a Beneficiary?</h4>
+                                    <h6>Do you want to receive donation?</h6>
                                     <a href="{{ url('/charity-register') }}" class="btn btn-success btn-icon-split">
                           <span class="icon text-white-50">
                             <i class="far fa-building"></i>
                           </span>
-                                        <span class="text">Register as a Beneficiary</span>
+                                        <span class="text">Register as a Receiving Organization</span>
                                     </a>
                                 </div>
                             </div>
@@ -79,7 +85,7 @@
                                 <form class="user" action="{{ route('login') }}" method="post">
                                     @csrf
                                     <div class="form-group">
-                                        <input type="email" name="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                        <input type="email" name="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." value="{{ old('email') }}">
                                     </div>
                                     <div class="form-group">
                                         <input type="password" name="password" class="form-control" id="exampleInputPassword" placeholder="Password">

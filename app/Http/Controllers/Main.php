@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\User;
 use App\Donation;
@@ -14,12 +14,20 @@ use App\donation_form;
 use Illuminate\Support\Facades\Validator;
 use Session;
 use Redirect;
+use PDF;
 
 class Main extends Controller
 {
-    public function viewRecipt(){
+    public function viewRecipt($id){
+        $affected = DB::table('donation_forms')->where('id', $id)->update(['status' => "APPROVED"]);
         return view('receipt');
     }
+
+    public function generateInvoice(){
+        $pdf = PDF::loadView('receipt');
+return $pdf->download('invoice.pdf');
+    }
+
     public function register()
     {
         $validator = Validator::make(request()->all(), [
@@ -64,17 +72,51 @@ class Main extends Controller
     public function registerCharity(){
         
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'mobile' => 'required|size:11|unique:users,mobile',
-            'email' => 'required|email|unique:users,email',
+            'orgName' => 'required',
+            'orgAddress' => 'required',
+            'orgMobile' => 'required|size:11|unique:users,orgMobile',
+            'orgEmail' => 'required|email|unique:users,orgEmail',
             'password' => 'required',
-            'items' => 'required'
+            'categoryID' => 'required',
+            'regDate' => 'required',
+            'contactPersonName' => 'required',
+            'contactPersonNo' => 'required',
+            'contactPersonPosition' => 'required'
+            
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        echo "<pre>";
+        print_r(request()->all());
+        echo "</pre>";
         try {
+            
+            $user = new User;
+            $user->orgName = request()->orgName;
+            $user->orgAddress = request()->orgAddress;
+            $user->districtID = request()->districtID;
+            $user->thanaID = request()->thanaID;
+            $user->telephoneNo = request()->telephoneNo;
+            $user->orgMobile = request()->orgMobile;
+            $user->categoryID = request()->categoryID;
+            $user->orgEmail = request()->orgEmail;
+            $user->website = request()->website;
+            $user->regDate = request()->regDate;
+            $user->password = request()->password;
+            $user->orgType = request()->orgType;
+            $user->NGO = request()->NGO;
+            $user->DSS = request()->DSS;
+            $user->Zakat = request()->Zakat;
+            $user->Stock = request()->Stock;
+            $user->contactPersonName = request()->contactPersonName;
+            $user->contactPersonNo = request()->contactPersonNo;
+            $user->contactPersonPosition = request()->contactPersonPosition;
+            $user->role = 'charity';
+            
+            $user->save();
+            
+            /*
             $user = User::create([
                 'name' => request()->input('name'),
                 'address' => request()->input('address'),
@@ -82,8 +124,11 @@ class Main extends Controller
                 'email' => strtolower(request()->input('email')),
                 'password' => request()->input('password'),
                 'role' => 'charity',
-                'items' => request()->input('items'),
+                //'items' => request()->input('items'),
+                'items' => 2,
+                
             ]);
+            */
             $this->setSuccess('Charity Registration Successful! Check Your E-Mail for Confirmation');
             //$user->notify(new RegistrationEmailNotification($user));
             return redirect()->route('charity-register');
@@ -94,17 +139,38 @@ class Main extends Controller
     }
 
     public function registerDonor(){
+        
+        echo "<pre>";
+        print_r(request()->all());
+        echo "</pre>";
+    
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'mobile' => 'required|size:11|unique:users,mobile',
-            'email' => 'required|email|unique:users,email',
+            'orgName' => 'required',
+            'orgAddress' => 'required',
+            'orgMobile' => 'required|size:11|unique:users,orgMobile',
+            'orgEmail' => 'required|email|unique:users,orgEmail',
             'password' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
         try {
+            $user = new User;
+            $user->orgName = request()->orgName;
+            $user->orgAddress = request()->orgAddress;
+            $user->districtID = request()->districtID;
+            $user->thanaID = request()->thanaID;
+            $user->orgMobile = request()->orgMobile;
+            $user->orgEmail = request()->orgEmail;
+            $user->password = request()->password;
+            $user->occupation = request()->occupation;
+            
+            $user->role = 'donor';
+            
+            $user->save();
+            
+            
+            /*
             $user = User::create([
                 'name' => request()->input('name'),
                 'address' => request()->input('address'),
@@ -114,6 +180,7 @@ class Main extends Controller
                 'role' => 'donor',
                 'items' => '',
             ]);
+            */
             $this->setSuccess('Donor Registration Successful! Check Your E-Mail for Confirmation');
             //$user->notify(new RegistrationEmailNotification($user));
             return redirect()->route('donor-register');
@@ -126,7 +193,7 @@ class Main extends Controller
     public function donorHome(){
         $category = category::all();
         $subcategory = subcategory::all();
-        $district = district::all();
+        $district = district::orderBy('name','asc')->get();
         return view('donor-home',compact('category','district','subcategory'));
     }
     public function login(){
@@ -140,21 +207,21 @@ class Main extends Controller
         }
 
         $credentials = request()->except(['_token']);
-        $user = User::where('email', '=', $credentials['email'])->where('password', '=', $credentials['password'] );
+        $user = User::where('orgEmail', '=', $credentials['email'])->where('password', '=', $credentials['password'] );
 
         if ($user->count()==1) {
             $user = $user->first();
             $data = [
                 'user_id'   => $user->user_id,
-                'name'      => $user->name,
-                'email'     => $user->email,
-                'mobile'    => $user->mobile,
-                'address'   => $user->address,
+                'name'      => $user->orgName,
+                'email'     => $user->orgEmail,
+                'mobile'    => $user->orgMobile,
+                'address'   => $user->orgAddress,
                 'role'      => $user->role,
-                'cat_id'    => $user->items
+                'cat_id'    => $user->categoryID
             ];
             Session::put('swift_trade_user_data', $data);
-            $this->setSuccess('User logged in.');
+            //$this->setSuccess('User logged in.');
             return redirect('/'.$data['role'].'/home');
         }
         $this->setError('Invalid credentials.');
@@ -231,6 +298,23 @@ class Main extends Controller
         $donation = Donation::where('charity_id', '=', $user_id['user_id'])->get()->toArray();
         $data = [];
         $data['donations'] = $donation;
+        
+        /**/
+        $finInfo = User::where('user_id', '=', $user_id['user_id'])->get()->toArray();
+        $district = request()->input('district_id');
+        $thana_id = request()->input('thana_id');
+        $subcategory = request()->input('subcategory');
+        $category = request()->input('category');
+        
+        $applicationList = donation_form::where('user_id','=',$user_id['user_id'])->get()->toArray();
+  
+        $data = [
+            'applicationList' => $applicationList,
+            'finInfo' => $finInfo
+        ];
+        
+        /**/
+        
         return view('charity-home', $data);
     }
 
@@ -275,26 +359,48 @@ class Main extends Controller
     }
     
     public function donationFormSubmit(Request $request){
-        //dd($request->count);
+        //dd($request);
         $id = Session::get('swift_trade_user_data')['user_id'];
         
         for($i=0;$i < $request->count+1;$i++){
-            $item_str = "item_".$i;
+            $item_str = "subcat_".$i;
             $qty_str = "qty_".$i;
             $price_str = "price_".$i;
-            
+            $note_str = "note_".$i;
+
             $donation_form = new donation_form;
             $donation_form->subcat_id = $request->$item_str;
             $donation_form->qty = $request->$qty_str;
             $donation_form->price = $request->$price_str;
             $donation_form->user_id = $id;
             $donation_form->district_id = $request->district_id; 
-            $donation_form->thana_id = $request->thana_id; 
+            $donation_form->thana_id = $request->thana_id;
+            $donation_form->note = $request->$note_str;
+            $donation_form->status = 'PENDING'; 
+            
             
             $donation_form->save();
         }
         Session::flash('message', "Form submitted succesfully");
+        echo "Hello!";
         return Redirect::back();
     }
+    
+    public function financialInfoSubmit(Request $request){
+        //dd($request->count);
+        $id = Session::get('swift_trade_user_data')['user_id'];
+        
+        $affected = DB::table('users')
+              ->where('user_id', $id)
+              ->update([
+                  'bkash' => $request->bkash,
+                  'bankDetails' => $request->bankDetails
+              ]);
+        
+
+        Session::flash('message', "Financial Information submitted succesfully");
+        return Redirect::back();
+    }
+    
 
 }

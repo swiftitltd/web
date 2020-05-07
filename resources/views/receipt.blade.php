@@ -1,16 +1,8 @@
-<a href="http://echaritybd.com/viewRecipt?d=1">Download PDF</a>
-
-    <?php
-        if(isset($_GET['d'])){
-        header("Content-type:application/pdf");
-
-        // It will be called downloaded.pdf
-        header("Content-Disposition:attachment;filename=downloaded.pdf");
-        }
-    ?>
-
-
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<button><a class="btn btn-default" href="{{ route('invoice') }}">Download PDF</a></button>
+<button><a class="btn btn-default" href="{{ url('/donor/home') }}">Back to Home</a></button>
+<br>
+<br>
 <html>
 
 <head>
@@ -58,7 +50,7 @@ p
 	margin:1.0in 1.0in 1.0in 1.0in;}
 div.WordSection1
 	{page:WordSection1;}
--->
+
 </style>
 
 </head>
@@ -203,6 +195,7 @@ style='font-size:15.0pt;color:black'>www.donationBD.com</span></b></p>
 </span></p>
 
 </div>
+
 
 </body>
 

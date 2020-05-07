@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -23,6 +23,13 @@
 </head>
 
 <body class="bg-gradient-primary">
+<style>
+    .bg-gradient-primary {
+    background-color: #dee1e6;
+    background-image: linear-gradient(180deg,#dee1e6 10%,#d1d1d2 100%);
+    background-size: cover;
+}
+</style>
 
 <div class="container-fluid">
 
@@ -36,6 +43,7 @@
                     <!-- Nested Row within Card Body -->
                     <div class="row">
                         <div class="offset-lg-2 col-lg-8">
+                            <a href="{{ url('/donation-platform') }}" class="btn btn-success" style="margin-top:20px">Home</a>
                             <div class="p-5">
                                 <div class="text-center">
                                     @if ($errors->any())
@@ -57,21 +65,38 @@
                                 <form class="user" action="{{ route('donor-register-post') }}" method="post">
                                     @csrf
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="name" placeholder="Name *">
+                                        <input type="text" class="form-control" name="orgName" placeholder="Name *" value="{{ old('name') }}">
                                     </div>
                                     <div class="form-group">
-                                        <textarea class="form-control" name="address" placeholder="Address *"></textarea>
+                                        <textarea class="form-control" name="orgAddress" placeholder="Address *">{{ old('address') }}</textarea>
+                                    </div>
+                                    
+                                   <div class="form-group">
+                                <!--<label class="h5">Choose Your Expected Location</label>-->
+                                <select id="getThana" required class="form-control" name="districtID" style="margin-bottom:10px">
+                                    <option value="0">Select District</option>
+                                        @foreach($district as $districts)
+                                            
+                                            <option value="{{ $districts->id }}">{{ $districts->name }}</option>
+                                        @endforeach
+                                </select>
+                                
+                                <select id="thana" required class="form-control" name="thanaID" style="margin-bottom:10px">
+                                    <option value="0">Select Thana/Upazila</option>
+                                
+                                </select>
+                            </div>
+                                        
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="orgMobile" placeholder="Mobile No. *" value="{{ old('mobile') }}">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="mobile" placeholder="Mobile No. *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" name="" placeholder="Occupation">
+                                        <input type="text" class="form-control" name="occupation" placeholder="Occupation" value="{{ old('occupation') }}">
                                     </div>
 
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="email" placeholder="Email *">
+                                        <input type="text" class="form-control" name="orgEmail" placeholder="Email *" value="{{ old('email') }}">
                                     </div>
 
                                     <div class="form-group">
@@ -82,7 +107,7 @@
                                     </div>
 
                                     <button type="submit"  class="btn btn-primary btn-block">
-                                        Resigter as a Donor
+                                        Resigter
                                     </button>
                                 </form>
                             </div>
@@ -106,7 +131,64 @@
 
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
 
+      
+      
+      $('#district').change(function(){
+        $('#getSubcat').prop('selectedIndex', 0);
+    });
+    
+    $('#getSubcat').change(function(){
+    var getSubcat = $(this).val();    
+    if(getSubcat){
+        $.ajax({
+           type:"GET",
+           url:"{{url('getSubcat')}}?getSubcat="+getSubcat,
+           success:function(res){               
+            if(res){
+                $("#Subcat").empty();
+                
+                $("#Subcat").append('<option value="0">Select Subcategory </option>');
+                $.each(res,function(key,value){
+                    $("#Subcat").append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
+           
+            }else{
+               $("#Subcat").empty();
+            }
+           }
+        });
+    }    
+   });
+   
+   
+   $('#getThana').change(function(){
+    var getThana = $(this).val();    
+    if(getThana){
+        $.ajax({
+           type:"GET",
+           url:"{{url('getThana')}}?getThana="+getThana,
+           success:function(res){               
+            if(res){
+                $("#thana").empty();
+                $("#thana").append('<option value="0">Select Thana/Upojela </option>');
+                $.each(res,function(key,value){
+                    $("#thana").append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
+           
+            }else{
+               $("#thana").empty();
+            }
+           }
+        });
+    }    
+   });
+      
+      
+    });
+</script>
 </body>
 
 </html>

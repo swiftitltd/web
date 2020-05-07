@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -30,7 +30,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
@@ -44,19 +44,19 @@
 
         
     
-        <!-- Nav Item - Dashboard -->
+        <!-- Nav Item - Dashboard 
         <li class="nav-item">
             <a class="nav-link" href="{{ url('charity/getDonationForm') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Apply For Donation</span>
             </a>
         </li>
-
-        <!-- Sidebar Toggler (Sidebar) -->
+-->
+        <!-- Sidebar Toggler (Sidebar) 
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+        -->
     </ul>
     <!-- End of Sidebar -->
 
@@ -85,7 +85,7 @@
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-lg-inline text-gray-600 small"></span>
+                            <span class="mr-2 d-lg-inline text-gray-600 small">My Account</span>
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -115,11 +115,150 @@
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
-                <h1 class="h3 mb-4 text-gray-800">Beneficiary Home Page</h1><hr>
+            <div class="container">
+                <h1 class="h3 mb-4 text-gray-800">Receiving Organization Home Page</h1><hr>
+                @if (Session::has('message'))
+                       <div class="alert alert-info">{{ Session::get('message') }}</div>
+                    @endif
                 <div class="row">
                
 
+            <!-- Earnings (Monthly) Card Example
+            <div class="col-xl-3 col-md-6 mb-4">
+             
+            </div>
+
+             Earnings (Monthly) Card Example 
+            <div class="col-xl-3 col-md-6 mb-4">
+
+            </div>
+            -->
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-5 col-md-5 mb-4">
+<a href="{{ url('charity/getDonationForm') }}" class="btn btn-primary btn-icon-split btn-xl">
+                    
+                    <span class="icon text-white-50 charity-home-new-button">
+                      <i class="fas fa-flag"></i>
+                    </span>
+                    <span class="text charity-home-new-button">Apply For Donation</span>
+                    
+                  </a>
+                  <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-md font-weight-bold text-info text-uppercase mb-1">Financial Information</div>
+                      <form action="{{ url('financialInfoSubmit') }}" method="post">
+                          @csrf
+                        <div class="form-group">
+                            <label>bKash Account No.</label>
+                            <input name="bkash" id="bkash" readonly="true" class="form-control" value="<?php echo $finInfo[0]['bkash']; ?>">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bank Account Info</label>
+                            <textarea name="bankDetails" id="bankDetails" readonly="true" class="form-control"><?php echo $finInfo[0]['bankDetails']; ?></textarea>
+                        </div>
+                        
+                        <input type="submit" id="submit" class="btn btn-primary" value="Submit" style="display: none">
+                        </form><button class="btn btn-primary" id="edit">Edit Info</button>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-7 col-md-7 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-md font-weight-bold text-info text-uppercase mb-1">Application Status</div>
+
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                                @foreach ($applicationList as $a)
+                                   <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <?php
+                                            $subCategories = DB::table('subcategories')->where('id',$a['subcat_id'])->first();
+                                            $categories = DB::table('categories')->where('id',$subCategories->category_id)->first();
+                                            if($a['status']=="PENDING"){?>
+<div class="h5 mb-0 mr-3 font-weight-bold text-xs" style="color: red"><?php echo $a['status']; ?></div>
+                                            <?php }else{ ?>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-xs" style="color: green"><?php echo $a['status']; ?></div>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="col">
+                
+                                            <div class="h5 mb-0 mr-3 font-weight-bold text-sm"><?php echo is_object($subCategories) ?  $categories->name."(".$subCategories->name.")" : ""; ?> Application</div>
+                
+                                        </div>
+                                    </div>
+                                    
+                                @endforeach
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-xl-6 col-md-6 mb-4">
+                
+              
+            </div>
+            
+            
+
+            
+
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+             
+                  <style>
+                      .charity-home-new-button{
+                          font-size: 32px;
+                      }
+                  </style>
 
 
                 </div>
@@ -136,7 +275,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; E-Donation 2019</span>
+                    <span>Copyright &copy; E-Donation 2020</span>
                 </div>
             </div>
         </footer>
@@ -166,7 +305,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="{{ asset('/') }}">Logout</a>
+                <a class="btn btn-primary" href="/donation-platform">Logout</a>
             </div>
         </div>
     </div>
@@ -181,7 +320,17 @@
 
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
+<script>
+     $(document).ready(function(){
+        $("#edit").click(function(){
+            $("#submit").css("display", "inline");
+            $(this).hide();
+            $('#bkash').prop('readonly', false);
+            $('#bankDetails').prop('readonly', false);
+            
+        });
+     });
+</script>
 </body>
 
 </html>

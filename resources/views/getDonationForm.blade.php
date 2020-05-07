@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -30,7 +30,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
@@ -43,19 +43,19 @@
         <hr class="sidebar-divider my-0">
 
     
-        <!-- Nav Item - Dashboard -->
+        <!-- Nav Item - Dashboard 
         <li class="nav-item">
             <a class="nav-link" href="{{ url('charity/getDonationForm') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Apply For Donation</span>
             </a>
         </li>
-
-        <!-- Sidebar Toggler (Sidebar) -->
+-->
+        <!-- Sidebar Toggler (Sidebar) 
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+-->
     </ul>
     <!-- End of Sidebar -->
 
@@ -84,7 +84,7 @@
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-lg-inline text-gray-600 small"></span>
+                            My Account<span class="mr-2 d-lg-inline text-gray-600 small"></span>
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -114,9 +114,11 @@
             <!-- End of Topbar -->
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div class="container">
+                <!--<form action="{{ url('donationFormSubmit') }}" method="post">-->
                 <form action="{{ url('donationFormSubmit') }}" method="post">
-                <h1 class="h3 mb-4 text-gray-800">Beneficiary Home Page</h1><hr>
+                <h1 class="h3 mb-4 text-gray-800">Submit Your Application</h1><hr>
+                <a href="{{ url('/charity/home') }}" class="btn btn-success">Home</a>
                 <div class="row" style="padding:12px">
                     @if (Session::has('message'))
                        <div class="alert alert-info">{{ Session::get('message') }}</div>
@@ -130,25 +132,34 @@
                     </select>
                     
                     <select id="thana" required class="form-control" name="thana_id" style="margin-bottom:10px">
-                        <option value="0">Select Thana/Upojela</option>
+                        <option value="0">Select Thana/Upazila</option>
                     
                     </select>
-                    
-                    
-                    <select required class="form-control" name="item_0" style="margin-bottom:10px">
+                    <br><br><br>
+                    <select id="getSubcat[0]" swift="0" required class="form-control getSubCat" name="item_0" data-sl="0" style="margin-bottom:10px" onChange="callAsif(0)">
                         <option value="0">Select Your Item</option>
                     @foreach($subcategory as $subcat)
                         
-                        <option value="{{ $subcat->id }}">{{ $subcat->name }}</option>
+                        <option value="{{ $subcat->id }}" >{{ $subcat->name }}</option>
                     @endforeach
                     </select>
-                    <input required type="text" name="qty_0" class="form-control" placeholder="Type your quantity" style="margin-bottom:10px">
-                    <input required type="text" name="price_0" class="form-control" placeholder="Type your price">
+                    
+                    <select id="Subcat" name="subcat_0" class="form-control subCat0" required>
+                        
+                    </select>
+                    <br><br>
+
+                    <input required type="number" name="qty_0" min=0 step="0.05" class="form-control" placeholder="Type your quantity" style="margin-bottom:10px">
+                    <input required type="number" name="price_0" min="0" class="form-control" placeholder="Type your value"><br><br>
+                    <textarea name="note_0" class="form-control" placeholder="Description(Optional)"></textarea>
                     <input required type="hidden" name="count" value="0">
+                    <hr><hr>
                 </div>
                 
                 <div id="addCat"></div>
                 <input required type="button" value="Add more" id="catAdd" style="margin-top:10px">
+                
+                <input required type="button" value="Remove" id="catMinus" style="margin-top:10px">
                 
                 {{ csrf_field() }}
                 <input required type="submit" value="Submit" style="margin-top:10px">
@@ -166,7 +177,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; E-Donation 2019</span>
+                    <span>Copyright &copy; E-Donation 2020</span>
                 </div>
             </div>
         </footer>
@@ -196,7 +207,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="{{ asset('/') }}">Logout</a>
+                <a class="btn btn-primary" href="/donation-platform">Logout</a>
             </div>
         </div>
     </div>
@@ -212,12 +223,68 @@
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 <script>
+
+
+$(document).on('change', '.getSubCat', function(){
+
+    var sv = $(this).attr('swift');
+    var getSubcat = $(this).val();    
+    if(getSubcat){
+        $.ajax({
+           type:"GET",
+           url:"{{url('getSubcat')}}?getSubcat="+getSubcat,
+           success:function(res){               
+            if(res){
+                $(".subCat"+sv).empty();
+                
+                $(".subCat"+sv).append('<option value="0">Select Subcategory </option>');
+                $.each(res,function(key,value){
+                    $(".subCat"+sv).append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
+           
+            }else{
+               $(".subCat"+sv).empty();
+            }
+           }
+        });
+    }
+
+
+});
+
+
+
 i=1;
 $("#catAdd").click(function(){
-  $("#addCat").append("<div id='"+i+"'><input required type='hidden' name='count' value='"+i+"'><br><select required name='item_"+i+"' class='form-control'><option value='0'>Select Your Item</option>@foreach($subcategory as $subcat)<option value='{{ $subcat->id }}'>{{ $subcat->name }}</option>@endforeach</select><br><input required type='text' name='qty_"+i+"' placeholder='Type your quantity' class='form-control'><br><input required type='text' placeholder='Type your price' name='price_"+i+"' class='form-control'></div>");
+  $("#addCat").append("<div id='"+i+"'>"
+  +"<input required type='hidden' name='count' value='"+i+"'><br>"
+  +"<select required name='item_"+i+"' swift='"+i+"' class='form-control getSubCat'>"
+  +"<option value='0'>Select Your Item</option>"
+  +"@foreach($subcategory as $subcat)"
+  +"<option value='{{ $subcat->id }}'>{{ $subcat->name }}</option>"
+  +"@endforeach</select><br>"
+  
+  +"<select required name='subcat_"+i+"' class='form-control subCat"+i+"'>"
+  +"<option value='0'>Select Your Sub Category</option>"
+  +"</select><br>"
+
+  +"<input required type='text' name='qty_"+i+"' placeholder='Type your quantity' class='form-control'><br>"
+  +"<input required type='text' placeholder='Type your value' name='price_"+i+"' class='form-control'><br>"
+  +'<textarea name="note_'+i+'" class="form-control" placeholder="Description(Optional)"></textarea>'
+  +"</div><hr><hr>");
   i++;
     
 });
+
+$("#catMinus").click(function(){
+    d = i;
+    d--;
+    if(confirm("Do you want to remove this item?")){
+        $("#"+d).remove();
+    }
+    
+});
+
 
 $("#minusAdd").click(function(){
     $("div#sec").remove();
@@ -226,6 +293,29 @@ $("#minusAdd").click(function(){
 function hideData(id){
    $("#"+id).remove();
 }
+
+$('#getSubcat').change(function(){
+    var getSubcat = $(this).val();    
+    if(getSubcat){
+        $.ajax({
+           type:"GET",
+           url:"{{url('getSubcat')}}?getSubcat="+getSubcat,
+           success:function(res){               
+            if(res){
+                $("#Subcat").empty();
+                
+                $("#Subcat").append('<option value="0">Select Subcategory </option>');
+                $.each(res,function(key,value){
+                    $("#Subcat").append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
+           
+            }else{
+               $("#Subcat").empty();
+            }
+           }
+        });
+    }    
+   });
 
 
 $('#getThana').change(function(){
